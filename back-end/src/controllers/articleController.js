@@ -38,16 +38,7 @@ exports.postArticle = asyncHandler(async (req, res, next) => {
 exports.deleteArticle = asyncHandler(async (req, res, next) => {
     const { article_id } = req.params;
 
-    let sql;
-    switch (req.user.role) {
-        case "WRITER":
-            sql = writerQueries.deleteArticle;
-            break;
-        case "ADMIN":
-            sql = adminQueries.deleteArticle;
-            break;
-    }
-    
+    const sql = writerQueries.deleteArticle;
     const result = await asyncPoolQuery(sql, [article_id, req.user.username]);
     if (!result.affectedRows) return next(new ErrorResponse('Article could not be deleted!', 400));
 
@@ -64,32 +55,9 @@ exports.updateArticle = asyncHandler(async (req, res, next) => {
     newTitle = (newTitle) ? newTitle : null;
     newContent = (newContent) ? newContent : null;
 
-    let sql;
-    switch (req.user.role) {
-        case "WRITER":
-            sql = writerQueries.updateArticle;
-            break;
-        case "ADMIN":
-            sql = adminQueries.updateArticle;
-            break;
-    }
-
+    const sql = writerQueries.updateArticle;
     const result = await asyncPoolQuery(sql, [newTitle, newTitle, newContent, newContent, article_id, req.user.username])
     if (!result.affectedRows) return next(new ErrorResponse('Something went wrong', 400));
 
     res.status(201).json({ success: true, message: 'Article modified successfully!' });
-});
-
-//@desc   Get articles of a writer
-//@route  PUT /article/:username
-//@access PUBLIC
-exports.getWriterArticles = asyncHandler(async (req, res, next) => {
-    const { username } = req.params;
-
-    const sql = publicQueries.getArticlesOfWriter;
-
-    const result = asyncPoolQuery(sql, [username]);
-    if (!result.length) return next(new ErrorResponse('Articles could not be retrieved', 400));
-
-    res.status(200).json({ success: true, articles: result });
 });

@@ -11,9 +11,8 @@ const {
     updateArticle 
 } = require('../controllers/articleController');
 
-router.post('/create', protect(PERMISSIONS.ONLY_WRITERS_ADMIN), postArticle);
-
 router.get('/:article_id', getArticle);
+router.post('/create', protect(PERMISSIONS.ONLY_WRITERS_ADMIN), postArticle);
 router.delete('/:article_id', protect(PERMISSIONS.ONLY_WRITERS_ADMIN), deleteArticle);
 router.put('/:article_id', protect(PERMISSIONS.ONLY_WRITERS_ADMIN), updateArticle);
 
