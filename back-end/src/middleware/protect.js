@@ -14,7 +14,7 @@ module.exports = protect = permissions => {
             const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
             
             if (!permissions.find(element => element == decoded.role)) {
-                return next(new ErrorResponse('You are not allowed for this request!', 401));
+                return next(new ErrorResponse('Not authorized for this route!', 401));
             }
 
             req.user = decoded;
